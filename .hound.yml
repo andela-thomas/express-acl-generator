@@ -1,0 +1,6 @@
+# fails if there are violations
+fail_on_violations: true
+
+#javascript configuration
+javascript:
+  config_file: .jshintrc

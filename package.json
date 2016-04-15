@@ -1,15 +1,14 @@
 {
-  "name": "vopali",
+  "name": "acl-generator",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test-travis": "echo 'me'"
   },
   "author": "Nyambati Thomas <thomasnyambati@gmail.com>",
-  "license": "ISC",
+  "license": "MIT",
   "description": "",
   "dependencies": {
-    "prettyjson": "^1.1.3",
     "shelljs": "^0.6.0",
     "vorpal": "^1.10.10"
   }
