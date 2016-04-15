@@ -5,9 +5,11 @@
 
   var vorpal = require('vorpal')();
   var shell = require('shelljs');
+
   var prompt = require('./lib/prompt');
   var program = require('./lib/program');
   var fs = require('fs');
+  var path, mergedPath, filename, boolean, self;
 
   vorpal
     .delimiter('pg-cli:')
@@ -22,14 +24,19 @@
     .option('-p, --path <path>', 'Location where the ACL file will be written')
     .option('-n, --filename <file>', 'Name of the acl configuration file')
     .action(function(args, cb) {
-      var path = args.options.path;
-      var mergedPath;
-      var filename = args.options.filename;
-      var boolean = !!path;
-      var self = this;
+      path = args.options.path;
+      mergedPath;
+      filename = args.options.filename;
+      boolean = !!path;
+      self = this;
 
 
       switch (boolean) {
+        /**
+         * If path is specified, we check if the filename is specified
+         * if it is prompt the user for input and generate the acl rule
+         * @type {[type]}
+         */
         case true:
           if (filename) {
             shell.mkdir('-p', path);
@@ -69,15 +76,28 @@
 
 
   vorpal
-    .command('add <type> [optionalArg]')
-    .option('-a, --amount <value>', 'Number of cups of coffee.')
-    .option('-v, --verbosity [level]', 'Sets verbosity level.')
-    .option('-A', 'Does amazing things.', ['Unicorn', 'Narwhal', 'Pixie'])
-    .option('--amazing', 'Does amazing things')
+    .command('add <type> <group>')
+    .option('-p ,--path <value>', 'Location of the configuration file')
+    .option('-n , --filename <value>', 'The name of the acl configuration file')
+    .option('-a, --action <value>', 'The action to apply on the policy')
+    .option('-r, --resource [level]', 'the permissions')
+    .option('-m, --methods <value>', 'Rstrictd http methods')
     .action(function(args, cb) {
       switch (args.type) {
         case 'group':
-          this.log('adding group');
+
+          args.options = args.options || {};
+          path = args.options.path;
+          filename = args.options.filename;
+
+          if (path && filename) {
+            this.log(path);
+            shell.mkdir('-p', path);
+            program.add.group(this, fs, args, prompt);
+          } else {
+            console.log('nothing');
+            program.add.group(this, fs, args, prompt);
+          }
           break;
         case 'policy':
           this.log('adding policy');
