@@ -1,15 +1,32 @@
 {
   "name": "acl-generator",
   "version": "1.0.0",
-  "main": "index.js",
+  "preferGlobal": true,
+  "bin": {
+    "nacl": "index.js"
+  },
   "scripts": {
     "test-travis": "echo 'me'"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andela-thomas/express-acl-generator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/andela-thomas/express-acl-generator/issues"
+  },
+  "homepage": "https://github.com/andela-thomas/express-acl-generator#readme",
   "author": "Nyambati Thomas <thomasnyambati@gmail.com>",
   "license": "MIT",
-  "description": "",
+  "description": "ACL rules generator for express-acl",
   "dependencies": {
+    "npmlog": "^2.0.3",
     "shelljs": "^0.6.0",
     "vorpal": "^1.10.10"
+  },
+  "devDependencies": {
+    "coveralls": "^2.11.9",
+    "istanbul": "^0.4.3",
+    "mocha": "^2.4.5"
   }
 }
