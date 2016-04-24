@@ -5,14 +5,14 @@
 
   var vorpal = require('vorpal')();
   var shell = require('shelljs');
-
+  var log = require('npmlog');
   var prompt = require('./lib/prompt');
   var program = require('./lib/program');
   var fs = require('fs');
   var path, mergedPath, filename, boolean, self;
 
   vorpal
-    .delimiter('pg-cli:')
+  //.delimiter('pg-cli:')
     .show();
 
   /**
@@ -42,7 +42,6 @@
             shell.mkdir('-p', path);
             mergedPath = path + '/' + filename;
             var files = shell.ls(path);
-            console.log(mergedPath);
             if (files.indexOf(filename) !== -1) {
               self.prompt(prompt.exist, function(res) {
                 if (res.continue) {
@@ -54,7 +53,7 @@
             }
 
           } else {
-            self.log('Filename missing, usage init -p <path> -n <filename>');
+            log.warn('Missing filename', 'usage init -p <path> -n <filename>');
           }
 
           break;
@@ -76,14 +75,14 @@
 
 
   vorpal
-    .command('add <type> <group>')
+    .command('add <command> <option>')
     .option('-p ,--path <value>', 'Location of the configuration file')
     .option('-n , --filename <value>', 'The name of the acl configuration file')
     .option('-a, --action <value>', 'The action to apply on the policy')
     .option('-r, --resource [level]', 'the permissions')
     .option('-m, --methods <value>', 'Rstrictd http methods')
     .action(function(args, cb) {
-      switch (args.type) {
+      switch (args.command) {
         case 'group':
 
           args.options = args.options || {};
@@ -91,25 +90,23 @@
           filename = args.options.filename;
 
           if (path && filename) {
-            this.log(path);
             shell.mkdir('-p', path);
             program.add.group(this, fs, args, prompt);
           } else {
-            console.log('nothing');
             program.add.group(this, fs, args, prompt);
           }
           break;
         case 'policy':
           this.log('adding policy');
           break;
-        case 'method':
+        case 'methods':
           this.log('adding method');
           break;
         default:
+          this.log('Invalid command, usage add group <group>,' +
+            ' add policy <group> or add methods <resource>');
           break;
       }
-
-
       cb();
     });
 })();
