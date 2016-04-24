@@ -12,7 +12,7 @@
   var path, mergedPath, filename, boolean, self;
 
   vorpal
-  //.delimiter('pg-cli:')
+    .delimiter('acl:')
     .show();
 
   /**
@@ -75,12 +75,12 @@
 
 
   vorpal
-    .command('add <command> <option>')
+    .command('add <command> <group>')
     .option('-p ,--path <value>', 'Location of the configuration file')
     .option('-n , --filename <value>', 'The name of the acl configuration file')
     .option('-a, --action <value>', 'The action to apply on the policy')
     .option('-r, --resource [level]', 'the permissions')
-    .option('-m, --methods <value>', 'Rstrictd http methods')
+    .option('-m, --methods <value>', 'Restricted http methods')
     .action(function(args, cb) {
       switch (args.command) {
         case 'group':
@@ -97,10 +97,10 @@
           }
           break;
         case 'policy':
-          this.log('adding policy');
+          program.add.policy(fs, args);
           break;
         case 'methods':
-          this.log('adding method');
+
           break;
         default:
           this.log('Invalid command, usage add group <group>,' +
