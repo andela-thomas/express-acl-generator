@@ -75,7 +75,7 @@
 
 
   vorpal
-    .command('add <command> <group>')
+    .command('add <command> <group>', 'Add group, policy, methods')
     .option('-p ,--path <value>', 'Location of the configuration file')
     .option('-n , --filename <value>', 'The name of the acl configuration file')
     .option('-a, --action <value>', 'The action to apply on the policy')
@@ -100,7 +100,7 @@
           program.add.policy(fs, args);
           break;
         case 'methods':
-
+          program.add.methods(fs, args);
           break;
         default:
           this.log('Invalid command, usage add group <group>,' +
