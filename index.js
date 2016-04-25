@@ -68,9 +68,12 @@
                 program.initialize(self, prompt, fs);
               }
             });
-          } else {
-            program.initialize(self, prompt, fs);
+
+            return;
           }
+
+          program.initialize(self, prompt, fs);
+
           break;
       }
       cb();
