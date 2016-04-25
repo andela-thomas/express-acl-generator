@@ -9,7 +9,7 @@
   var prompt = require('./lib/prompt');
   var program = require('./lib/program');
   var fs = require('fs');
-  var path, mergedPath, filename, boolean, self;
+  var path, mergedPath, filename, boolean, self, files;
 
   vorpal
     .delimiter('acl:')
@@ -25,7 +25,6 @@
     .option('-n, --filename <file>', 'Name of the acl configuration file')
     .action(function(args, cb) {
       path = args.options.path;
-      mergedPath;
       filename = args.options.filename;
       boolean = !!path;
       self = this;
@@ -41,25 +40,29 @@
           if (filename) {
             shell.mkdir('-p', path);
             mergedPath = path + '/' + filename;
-            var files = shell.ls(path);
+            files = shell.ls(path);
+
             if (files.indexOf(filename) !== -1) {
               self.prompt(prompt.exist, function(res) {
                 if (res.continue) {
                   program.initialize(self, prompt, fs, mergedPath);
                 }
               });
-            } else {
-              program.initialize(self, prompt, fs, mergedPath);
+              return;
             }
+
+            program.initialize(self, prompt, fs, mergedPath);
+
 
           } else {
             log.warn('Missing filename', 'usage init -p <path> -n <filename>');
           }
 
           break;
+
         default:
-          var file = shell.ls();
-          if (file.indexOf('config.json') !== -1) {
+          files = shell.ls();
+          if (files.indexOf('config.json') !== -1) {
             self.prompt(prompt.exist, function(res) {
               if (res.continue) {
                 program.initialize(self, prompt, fs);
@@ -86,15 +89,13 @@
         case 'group':
 
           args.options = args.options || {};
-          path = args.options.path;
-          filename = args.options.filename;
 
-          if (path && filename) {
+          if (args.options.path && args.options.filename) {
             shell.mkdir('-p', path);
-            program.add.group(this, fs, args, prompt);
-          } else {
-            program.add.group(this, fs, args, prompt);
           }
+
+          program.add.group(this, fs, args, prompt);
+
           break;
         case 'policy':
           program.add.policy(fs, args);
@@ -103,8 +104,35 @@
           program.add.methods(fs, args);
           break;
         default:
-          this.log('Invalid command, usage add group <group>,' +
+          log.error('Invalid command', 'usage add group <group>,' +
             ' add policy <group> or add methods <resource>');
+          break;
+      }
+      cb();
+    });
+
+  vorpal
+    .command('remove <command> <group>', 'Removes group, policy and methods')
+    .option('-p ,--path <value>', 'Location of the configuration file')
+    .option('-n , --filename <value>', 'The name of the acl configuration file')
+    .option('-a, --action <value>', 'The action to apply on the policy')
+    .option('-r, --resource [level]', 'the permissions')
+    .option('-m, --methods <value>', 'Restricted http methods')
+    .action(function(args, cb) {
+
+      switch (args.command) {
+        case 'group':
+          log.info('SUCCESS', 'group removed');
+          break;
+        case 'policy':
+          log.info('SUCCESS', 'policy removed');
+          break;
+        case 'methods':
+          log.info('SUCCESS', 'method(s) removed');
+          break;
+        default:
+          log.error('Invalid command', 'usage remove group <group>,' +
+            ' remove policy <group> or remove methods <resource>');
           break;
       }
       cb();
