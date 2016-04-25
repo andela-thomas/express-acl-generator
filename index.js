@@ -125,13 +125,13 @@
 
       switch (args.command) {
         case 'group':
-          log.info('SUCCESS', 'group removed');
+          program.remove.group(fs, args);
           break;
         case 'policy':
-          log.info('SUCCESS', 'policy removed');
+          program.remove.policy(fs, args);
           break;
         case 'methods':
-          log.info('SUCCESS', 'method(s) removed');
+          program.remove.methods(fs, args);
           break;
         default:
           log.error('Invalid command', 'usage remove group <group>,' +
